@@ -21,9 +21,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(rio)
 library(here)
 library(tidyverse)
-#install.packages("fivethirtyeight")
 library(fivethirtyeight)
 library(lubridate)
+library(magrittr)
 
 #load data
 tv_data <- tv_states %>%
@@ -31,11 +31,19 @@ tv_data <- tv_states %>%
 
 tv_data$date <- round_date(tv_data$date, unit = "week")
 
-tv_data %>%
-  mutate(lubridate::mdy(date))
+tv_data$date <- format(as.Date(tv_data$date), "%b. %d  %Y")
 
-#ggplot(tv_data, aes(x = date)) +
-  #geom_histogram(aes(color = location)) +
+test <- tv_data %>% 
+  mutate(location = as.factor(location)) %>%
+  group_by(date, location) %>%
+  summarise(mean_share = mean(share))
+
+ggplot(test, aes(date, mean_share, fill = location)) +
+  geom_density() +
+  theme_bw() +
+  labs(title = "National Cabel News Networks",
+       x = "", 
+       y = "Share of Sentences")
 
 ```
 
