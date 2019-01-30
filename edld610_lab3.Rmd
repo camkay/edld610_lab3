@@ -13,7 +13,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-```{r part2_lfrank}
+### 2) Replicate the “National cable news networks” plot using the tv_states data. Don’t worry about all the labels. Try to match the colors but don’t worry about getting them exact.
+
+```{r part2_amiller}
+
+#load packages
+library(rio)
+library(here)
+library(tidyverse)
+#install.packages("fivethirtyeight")
+library(fivethirtyeight)
+library(lubridate)
+
+#load data
+tv_data <- tv_states %>%
+  gather(location, share, florida:puerto_rico) 
+
+tv_data$date <- round_date(tv_data$date, unit = "week")
+
+tv_data %>%
+  mutate(lubridate::mdy(date))
+
+#ggplot(tv_data, aes(x = date)) +
+  #geom_histogram(aes(color = location)) +
 
 ```
 
