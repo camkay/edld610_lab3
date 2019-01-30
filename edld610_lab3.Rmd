@@ -18,5 +18,79 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r part3_ckay}
+# Use the comic_characters dataset to visualize the proportion of different genders using at least three different methods. With your final visualization, make any additional modifications you think would help reduce the cognitive load neccessary to comprehend the figure.
+
+# load packages
+library(tidyverse)
+library(fivethirtyeight)
+library(waffle)
+library(extrafont)
+library(magrittr)
+library(viridis)
+
+###############################
+###VISUALIZATION 1
+###############################
+
+# import fonts (run this after you install the font awesome font of the first time)
+# font_import()
+
+# load fonts 
+loadfonts()
+
+# prepare data
+char_mf <- comic_characters %>%
+  filter(!is.na(sex)) %>%
+  count(sex) %>%
+  filter(n > 500) %>%
+  mutate(n          = round(n / 1000),
+         sex        = gsub(" Characters", "", sex),
+         proportion = n / sum(n),
+         percent    = round(proportion * 100),
+         percent    = paste(as.character(percent), "%", sep = ""))
+
+# visualization 1
+sex_count <- char_mf$n
+
+names(sex_count) <- char_mf$sex
+
+names(sex_count)
+
+waffle(parts = sex_count, 
+       use_glyph = "shield", 
+       rows = 2, 
+       glyph_size = 10, 
+       title = "Proportion of Comic Book Characters who are female and male",
+       xlab = "One shield = 1000 characters",
+       colors = c("#8C72F7", "#5BA4D3"),
+       legend_pos = "bottom")
+
+# visualization 2
+ggplot(char_mf, aes(x = "", y = proportion, fill = sex)) + 
+  geom_bar(stat = "identity", width = 1, color = "gray20") + 
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = c("#8C72F7", "#5BA4D3")) +
+  labs(title = "Proportion of Comic Book Characters who are female and male",
+       x     = "",
+       y     = "",
+       fill  = "Sex") +
+  theme_classic() +
+  theme(axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  geom_text(aes(label = percent), position = position_stack(vjust = .5))
+
+#visualization 3
+char_mf <- comic_characters %>%
+  filter(!is.na(sex)) %>%
+  count(sex) %>%
+  mutate(sex = gsub(" Characters", "", sex))
+
+ggplot(char_mf, aes(x = fct_reorder(sex, n), y = n, fill = sex)) +
+  geom_col() +
+  scale_y_log10() +
+  scale_fill_viridis_d()
+  
+
 
 ```
