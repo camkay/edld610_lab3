@@ -47,6 +47,14 @@ ggplot(test, aes(date, mean_share, fill = location)) +
 
 ```
 
+### 1) Start with the google trends
+
+```{r}
+library(ggthemes)
+
+```
+
+
 + Visualize the change in trends for each hurricane over time in one plot with three scales. Map color to a discrete scale.
 
 ```{r lfrank_part1_plot1}
@@ -66,7 +74,6 @@ google %>%
        x = "Date",
        fill = "Hurricane")
 ```
-
 
 + Visualize the trends again, this time using geom_ribbon, setting the ymin to 0.
 
