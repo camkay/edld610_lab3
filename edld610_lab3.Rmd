@@ -21,6 +21,7 @@ library(fivethirtyeight)
 library(lubridate)
 library(magrittr)
 library(ggthemes)
+library(ggThemeAssist)
 
 # disable scientific notation
 options(scipen = 999)
@@ -144,16 +145,30 @@ google %>%
 tv_data <- tv_states %>%
   gather(location, share, florida:puerto_rico) 
 
-#tv_data$date <- round_date(tv_data$date, unit = "week")
-#tv_data$date <- format(as.Date(tv_data$date), "%b. %d  %Y")
+tv_data$location <- factor(tv_data$location, levels = c("florida", "texas", "puerto_rico"))
+
+dateVec <- as.Date(c("2017-08-15", "2017-08-29", "2017-09-01", "2017-09-09", "2017-09-29", "2017-10-01", "2017-10-10"))
 
 ggplot(tv_data, aes(x = date, y = share, fill = location)) +
-  geom_area(position = "identity") +
-  theme_bw() +
-  labs(title = "National Cabel News Networks",
+  geom_area(color = "white",
+            position = "identity") +
+  scale_fill_manual(values = c("#E2327D", "#F36A05", "#0BBCB8")) +
+  theme_minimal() +
+  labs(title = "National cabel news networks",
        x = "", 
-       y = "Share of Sentences")
-
+       y = "Share of Sentences") + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 22),
+        legend.position = "none",
+        axis.title = element_text(size = 11, face = "bold"))
+  scale_x_date(limits = c(min(dateVec), max(dateVec)), 
+               date_labels = "%b. %d") +
+  annotate(geom = "text", y = 0.8, x = dateVec[2], 
+           label = "Texas", fontface = 2, size = 7) +
+  annotate(geom = "text", y = 1.4, x = dateVec[4], 
+           label = "Florida", fontface = 2, size = 7) +
+  annotate(geom = "text", y = 1.4, x = dateVec[5], 
+           label = "Puerto Rico", fontface = 2, size = 7)
+ 
 ```
 
 ### 3) Use the comic_characters dataset to visualize the proportion of different genders using at least **three** different methods. With your final visualization, make any additional modifications you think would help reduce the cognitive load neccessary to comprehend the figure.
