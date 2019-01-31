@@ -160,6 +160,8 @@ ggplot(tv_data, aes(x = date, y = share, fill = location)) +
 
 ```
 
+### 3) Use the comic_characters dataset to visualize the proportion of different genders using at least **three** different methods. With your final visualization, make any additional modifications you think would help reduce the cognitive load neccessary to comprehend the figure.
+
 ```{r part3_ckay}
 
 ```
