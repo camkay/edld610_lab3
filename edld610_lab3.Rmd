@@ -6,18 +6,14 @@ output: html_document
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+# set knitr options
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.width = 7.5,
+                      fig.height = 4.0)
 
-```{r part1_amiller}
-
-```
-
-### 2) Replicate the “National cable news networks” plot using the tv_states data. Don’t worry about all the labels. Try to match the colors but don’t worry about getting them exact.
-
-```{r part2_amiller}
-
-#load packages
+# load packages
 library(rio)
 library(here)
 library(tidyverse)
@@ -25,20 +21,8 @@ library(fivethirtyeight)
 library(lubridate)
 library(magrittr)
 
-#load data
-tv_data <- tv_states %>%
-  gather(location, share, florida:puerto_rico) 
-
-#tv_data$date <- round_date(tv_data$date, unit = "week")
-#tv_data$date <- format(as.Date(tv_data$date), "%b. %d  %Y")
-
-ggplot(tv_data, aes(x = date, y = share, fill = location)) +
-  geom_area(position = "identity") +
-  theme_bw() +
-  labs(title = "National Cabel News Networks",
-       x = "", 
-       y = "Share of Sentences")
-
+# disable scientific notation
+options(scipen = 999)
 ```
 
 ### 1) Start with the google trends
@@ -47,7 +31,6 @@ ggplot(tv_data, aes(x = date, y = share, fill = location)) +
 library(ggthemes)
 
 ```
-
 
 + Visualize the change in trends for each hurricane over time in one plot with three scales. Map color to a discrete scale.
 
@@ -85,7 +68,6 @@ google %>%
 # I couldn't figure out how to change the legend title without creating an extra legend for the other scale (color or fill)
 ```
 
-
 + Visualize the same relation, but change the scales so color is mapped to a continuous scale.
 
 ```{r lfrank_part1_plot3}
@@ -100,7 +82,6 @@ google %>%
   guides(color = guide_legend(title = "Search Frequency"), size = guide_legend(title = "Search Frequency"))
 
 ```
-
 
 + Create a data frame that includes the dates that each hurricane made landfall. Annotate one of your first two plots to include these reference points with vertical lines. The hurricanes made landfall on (approximately) the following days:
       Harvey: August 25, 2017
@@ -126,7 +107,6 @@ google %>%
        x = "Date")
 
 ```
-      
       
 + Make any final modifications to the plot you’d like to communicate the information as effectively as possible
 
@@ -160,6 +140,25 @@ google %>%
 
 ```
 
+### 2) Replicate the “National cable news networks” plot using the tv_states data. Don’t worry about all the labels. Try to match the colors but don’t worry about getting them exact.
+
+```{r part2_amiller}
+
+#load data
+tv_data <- tv_states %>%
+  gather(location, share, florida:puerto_rico) 
+
+#tv_data$date <- round_date(tv_data$date, unit = "week")
+#tv_data$date <- format(as.Date(tv_data$date), "%b. %d  %Y")
+
+ggplot(tv_data, aes(x = date, y = share, fill = location)) +
+  geom_area(position = "identity") +
+  theme_bw() +
+  labs(title = "National Cabel News Networks",
+       x = "", 
+       y = "Share of Sentences")
+
+```
 
 ```{r part3_ckay}
 
