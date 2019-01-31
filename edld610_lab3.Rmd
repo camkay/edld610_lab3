@@ -20,17 +20,13 @@ library(tidyverse)
 library(fivethirtyeight)
 library(lubridate)
 library(magrittr)
+library(ggthemes)
 
 # disable scientific notation
 options(scipen = 999)
 ```
 
 ### 1) Start with the google trends
-
-```{r}
-library(ggthemes)
-
-```
 
 + Visualize the change in trends for each hurricane over time in one plot with three scales. Map color to a discrete scale.
 
