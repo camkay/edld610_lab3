@@ -159,14 +159,14 @@ ggplot(tv_data, aes(x = date, y = share, fill = location)) +
        y = "Share of Sentences") + 
   theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 22),
         legend.position = "none",
-        axis.title = element_text(size = 11, face = "bold"))
+        axis.title = element_text(size = 11, face = "bold")) +
   scale_x_date(limits = c(min(dateVec), max(dateVec)), 
                date_labels = "%b. %d") +
   annotate(geom = "text", y = 0.8, x = dateVec[2], 
            label = "Texas", fontface = 2, size = 7) +
-  annotate(geom = "text", y = 1.4, x = dateVec[4], 
+  annotate(geom = "text", y = 1.0, x = dateVec[4], 
            label = "Florida", fontface = 2, size = 7) +
-  annotate(geom = "text", y = 1.4, x = dateVec[5], 
+  annotate(geom = "text", y = 2, x = dateVec[5], 
            label = "Puerto Rico", fontface = 2, size = 7)
  
 ```
