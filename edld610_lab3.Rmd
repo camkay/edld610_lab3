@@ -13,7 +13,37 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-```{r part2_lfrank}
+### 2) Replicate the “National cable news networks” plot using the tv_states data. Don’t worry about all the labels. Try to match the colors but don’t worry about getting them exact.
+
+```{r part2_amiller}
+
+#load packages
+library(rio)
+library(here)
+library(tidyverse)
+library(fivethirtyeight)
+library(lubridate)
+library(magrittr)
+
+#load data
+tv_data <- tv_states %>%
+  gather(location, share, florida:puerto_rico) 
+
+tv_data$date <- round_date(tv_data$date, unit = "week")
+
+tv_data$date <- format(as.Date(tv_data$date), "%b. %d  %Y")
+
+test <- tv_data %>% 
+  mutate(location = as.factor(location)) %>%
+  group_by(date, location) %>%
+  summarise(mean_share = mean(share))
+
+ggplot(test, aes(date, mean_share, fill = location)) +
+  geom_density() +
+  theme_bw() +
+  labs(title = "National Cabel News Networks",
+       x = "", 
+       y = "Share of Sentences")
 
 ```
 
