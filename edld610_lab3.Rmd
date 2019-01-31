@@ -29,17 +29,11 @@ library(magrittr)
 tv_data <- tv_states %>%
   gather(location, share, florida:puerto_rico) 
 
-tv_data$date <- round_date(tv_data$date, unit = "week")
+#tv_data$date <- round_date(tv_data$date, unit = "week")
+#tv_data$date <- format(as.Date(tv_data$date), "%b. %d  %Y")
 
-tv_data$date <- format(as.Date(tv_data$date), "%b. %d  %Y")
-
-test <- tv_data %>% 
-  mutate(location = as.factor(location)) %>%
-  group_by(date, location) %>%
-  summarise(mean_share = mean(share))
-
-ggplot(test, aes(date, mean_share, fill = location)) +
-  geom_density() +
+ggplot(tv_data, aes(x = date, y = share, fill = location)) +
+  geom_area(position = "identity") +
   theme_bw() +
   labs(title = "National Cabel News Networks",
        x = "", 
