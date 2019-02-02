@@ -15,11 +15,11 @@ editor_options:
 
 ```{r setup, include = FALSE}
 # set knitr options
-knitr::opts_chunk$set(echo = TRUE,
-                      message = FALSE,
-                      warning = FALSE,
-                      fig.width = 7.5,
-                      fig.height = 4.0)
+knitr::opts_chunk$set(echo       = TRUE,
+                      message    = FALSE,
+                      warning    = FALSE,
+                      fig.width  = 9.0,
+                      fig.height = 5.0)
 
 # load packages
 library(rio)
@@ -43,7 +43,6 @@ options(scipen = 999)
 + Visualize the change in trends for each hurricane over time in one plot with three scales. Map color to a discrete scale.
 
 ```{r lfrank_part1_plot1}
-
 google <- google_trends %>% 
   gather(key = "hurricane", value = "trends", -1) %>% 
   separate(col = "hurricane", into = c("tmp1","hurricane","tmp2")) %>% 
@@ -150,7 +149,7 @@ google %>%
 
 #### 2) Replicate the “National cable news networks” plot using the tv_states data. Don’t worry about all the labels. Try to match the colors but don’t worry about getting them exact.
 
-```{r part2_amiller, fig.width = 9, fig.height = 5}
+```{r part2_amiller}
 
 #load data
 tv_data <- tv_states %>%
@@ -179,7 +178,7 @@ ggplot(tv_data, aes(x = date, y = share, fill = location)) +
                      label = c("1", "2", "3%"),
                      limits = c(0, NA)) +
   geom_text(y = 0.7, x = dateVec[2], 
-         label = "Texas", fontface = 2, size = 5, color = "black") +
+         label = "Texas", fontface = 2, size = 5) +
   geom_text(y = 1.2, x = dateVec[4], 
            label = "Florida", fontface = 2, size = 5) +
   geom_text(y = 1.2, x = dateVec[5], 
@@ -189,13 +188,7 @@ ggplot(tv_data, aes(x = date, y = share, fill = location)) +
 
 #### 3) Use the comic_characters dataset to visualize the proportion of different genders using at least **three** different methods. With your final visualization, make any additional modifications you think would help reduce the cognitive load neccessary to comprehend the figure.
 
-```{r part3_ckay, fig.width = 9, fig.height = 5}
-# Use the comic_characters dataset to visualize the proportion of different genders using at least three different methods. With your final visualization, make any additional modifications you think would help reduce the cognitive load neccessary to comprehend the figure.
-
-# load packages
-
-
-
+```{r part3_ckay}
 ###############################
 ###VISUALIZATION 1
 ###############################
