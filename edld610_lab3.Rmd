@@ -34,6 +34,10 @@ library(waffle)
 library(extrafont)
 library(viridis)
 
+# import fonts (run this after you install the font awesome font for the first time)
+# font_import()
+# loadfonts()
+
 # disable scientific notation
 options(scipen = 999)
 ```
@@ -189,45 +193,40 @@ ggplot(tv_data, aes(x = date, y = share, fill = location)) +
 #### 3) Use the comic_characters dataset to visualize the proportion of different genders using at least **three** different methods. With your final visualization, make any additional modifications you think would help reduce the cognitive load neccessary to comprehend the figure.
 
 ```{r ckay_part3_plot1}
-###############################
-###VISUALIZATION 1
-###############################
-
-# import fonts (run this after you install the font awesome font of the first time)
-# font_import()
-
-# load fonts 
-loadfonts()
-
-# prepare data
-char_mf <- comic_characters %>%
+# create new column with female, male, and nonbinary
+char_3c <- comic_characters %>%
   filter(!is.na(sex)) %>%
-  count(sex) %>%
-  filter(n > 500) %>%
-  mutate(n          = round(n / 1000),
-         sex        = gsub(" Characters", "", sex),
-         proportion = n / sum(n),
+  mutate(sex           = gsub(" Characters", "", sex),
+         three_cat_sex = case_when(sex == "Female" ~ "Female",
+                                   sex == "Male"   ~ "Male",
+                                   TRUE            ~ "Nonbinary"))
+
+# count number of instances of each sex
+char_3c %<>%
+  count(three_cat_sex) %>%
+  mutate(proportion = n / sum(n),
          percent    = round(proportion * 100),
-         percent    = paste(as.character(percent), "%", sep = ""))
+         percent    = paste(as.character(percent), "%", sep = ""),
+         n_100      = round(n / 100))
 
-# visualization 1
-sex_count <- char_mf$n
+# create a named vector
+sex_count <- char_3c$n_100
+names(sex_count) <- char_3c$three_cat_sex
 
-names(sex_count) <- char_mf$sex
-
-names(sex_count)
-
+# create waffle plot
 waffle(parts = sex_count, 
        use_glyph = "shield", 
-       rows = 2, 
-       glyph_size = 10, 
-       title = "Proportion of Comic Book Characters who are female and male",
-       xlab = "One shield = 1000 characters",
-       colors = c("#8C72F7", "#5BA4D3"),
+       rows = 5, 
+       glyph_size = 4, 
+       title = "Proportion of comic book characters who are female, male, and non-binary",
+       xlab = "(One shield = ~100 characters)",
+       colors = c("#8C72F7", "#5BA4D3", "#FFA404"),
        legend_pos = "bottom")
+```
 
-# visualization 2
-ggplot(char_mf, aes(x = "", y = proportion, fill = sex)) + 
+```{r ckay_part3_plot1}
+# produce bar chart
+ggplot(char_3c, aes(x = "", y = proportion, fill = sex)) + 
   geom_bar(stat = "identity", width = 1, color = "gray20") + 
   coord_polar("y", start = 0) +
   scale_fill_manual(values = c("#8C72F7", "#5BA4D3")) +
@@ -241,13 +240,17 @@ ggplot(char_mf, aes(x = "", y = proportion, fill = sex)) +
         axis.ticks = element_blank()) +
   geom_text(aes(label = percent), position = position_stack(vjust = .5))
 
+
+```
+
+
 #visualization 3
-char_mf <- comic_characters %>%
+char_3c <- comic_characters %>%
   filter(!is.na(sex)) %>%
   count(sex) %>%
   mutate(sex = gsub(" Characters", "", sex))
 
-ggplot(char_mf, aes(x = fct_reorder(sex, n), y = n, fill = sex)) +
+ggplot(char_3c, aes(x = fct_reorder(sex, n), y = n, fill = sex)) +
   geom_col() +
   scale_y_log10() +
   scale_fill_viridis_d()
