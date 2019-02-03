@@ -194,20 +194,21 @@ ggplot(tv_data, aes(x = date, y = share, fill = location)) +
 
 ```{r ckay_part3_plot1}
 # create new column with female, male, and nonbinary
-char_3c <- comic_characters %>%
+char_data <- comic_characters %>%
   filter(!is.na(sex)) %>%
   mutate(sex           = gsub(" Characters", "", sex),
          three_cat_sex = case_when(sex == "Female" ~ "Female",
                                    sex == "Male"   ~ "Male",
-                                   TRUE            ~ "Nonbinary"))
+                                   TRUE            ~ "Non-binary"))
 
 # count number of instances of each sex
-char_3c %<>%
+char_3c <- char_data %>%
   count(three_cat_sex) %>%
   mutate(proportion = n / sum(n),
-         percent    = round(proportion * 100),
+         percent    = round(proportion * 100, 2),
          percent    = paste(as.character(percent), "%", sep = ""),
-         n_100      = round(n / 100))
+         n_100      = round(n / 100)) %>%
+  arrange(desc(proportion))
 
 # create a named vector
 sex_count <- char_3c$n_100
@@ -216,45 +217,55 @@ names(sex_count) <- char_3c$three_cat_sex
 # create waffle plot
 waffle(parts = sex_count, 
        use_glyph = "shield", 
-       rows = 5, 
-       glyph_size = 4, 
+       rows = 10, 
+       glyph_size = 6, 
        title = "Proportion of comic book characters who are female, male, and non-binary",
        xlab = "(One shield = ~100 characters)",
-       colors = c("#8C72F7", "#5BA4D3", "#FFA404"),
+       colors = c("#5BA4D3", "#8C72F7", "#FFA404"),
        legend_pos = "bottom")
 ```
 
-```{r ckay_part3_plot1}
-# produce bar chart
-ggplot(char_3c, aes(x = "", y = proportion, fill = sex)) + 
+```{r ckay_part3_plot2}
+# produce bar plot
+char_data %>%
+  count(sex) %>%
+  mutate(proportion = n / sum(n),
+         percent    = round(proportion * 100, 2),
+         percent    = paste(as.character(percent), "%", sep = ""),
+         three_cat_sex = case_when(sex == "Female" ~ "Female",
+                                   sex == "Male"   ~ "Male",
+                                   TRUE            ~ "Non-binary")) %>%
+    ggplot(aes(x = fct_reorder(three_cat_sex, desc(proportion)), y = n, fill = fct_reorder(sex, desc(n)))) +
+      geom_bar(stat = 'identity', position = 'stack') +
+      scale_fill_viridis_d() +
+      scale_y_log10() +
+      geom_label(aes(label = paste(sex, "=", percent)), fill = "white") +
+      labs(title   = "Proportion of comic book characters who are female, male, and non-binary",
+           y       = "Number of characters",
+           x       = "Sex",
+           fill    = "Sex",
+           caption = "Data from https://fivethirtyeight.com/features/women-in-comic-books/") +
+      theme_bw()
+```
+
+```{r ckay_part3_plot3}
+# produce pie plot
+ggplot(char_3c, aes(x = "", y = proportion, fill = three_cat_sex)) + 
   geom_bar(stat = "identity", width = 1, color = "gray20") + 
   coord_polar("y", start = 0) +
-  scale_fill_manual(values = c("#8C72F7", "#5BA4D3")) +
-  labs(title = "Proportion of Comic Book Characters who are female and male",
-       x     = "",
-       y     = "",
-       fill  = "Sex") +
+  scale_fill_viridis_d() +
+  geom_label(aes(label = percent), 
+             label.r = unit(0.001, "lines"),
+             fill = "white", 
+             size = 5,
+             position = position_stack(vjust = .5)) +
+  labs(title   = "Proportion of comic book characters who are female, male, and non-binary",
+       x       = "",
+       y       = "",
+       fill    = "Sex",
+       caption = "Data from https://fivethirtyeight.com/features/women-in-comic-books/") +
   theme_classic() +
   theme(axis.line = element_blank(),
         axis.text = element_blank(),
-        axis.ticks = element_blank()) +
-  geom_text(aes(label = percent), position = position_stack(vjust = .5))
-
-
-```
-
-
-#visualization 3
-char_3c <- comic_characters %>%
-  filter(!is.na(sex)) %>%
-  count(sex) %>%
-  mutate(sex = gsub(" Characters", "", sex))
-
-ggplot(char_3c, aes(x = fct_reorder(sex, n), y = n, fill = sex)) +
-  geom_col() +
-  scale_y_log10() +
-  scale_fill_viridis_d()
-  
-
-
+        axis.ticks = element_blank())
 ```
